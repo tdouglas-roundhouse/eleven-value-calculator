@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eleven · Value Calculator</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#ffffff;--bg-secondary:#f5f4f1;--bg-tertiary:#eeede9;
+  --bg-info:#e6f1fb;--bg-success:#eaf3de;--bg-warning:#faeeda;--bg-danger:#fcebeb;
+  --text-primary:#1a1a18;--text-secondary:#5f5e5a;--text-tertiary:#888780;
+  --text-info:#185fa5;--text-success:#3b6d11;--text-warning:#854f0b;
+  --border-light:rgba(0,0,0,0.10);--border-mid:rgba(0,0,0,0.18);--border-strong:rgba(0,0,0,0.28);
+  --border-info:#b5d4f4;--border-success:#c0dd97;--border-warning:#fac775;
+  --radius-md:8px;--radius-lg:12px;--radius-xl:16px;
+  --font:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+  --blue:#185fa5;--green-pip:#1D9E75;--amber-pip:#EF9F27;
+  --ink-deep:#1a2332;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg-primary:#1e1e1c;--bg-secondary:#27271f;--bg-tertiary:#2e2e26;
+  --bg-info:#0c3352;--bg-success:#172f08;--bg-warning:#3d2406;--bg-danger:#3a1212;
+  --text-primary:#f0efe8;--text-secondary:#b4b2a9;--text-tertiary:#888780;
+  --text-info:#85b7eb;--text-success:#97c459;--text-warning:#ef9f27;
+  --border-light:rgba(255,255,255,0.08);--border-mid:rgba(255,255,255,0.14);--border-strong:rgba(255,255,255,0.22);
+  --border-info:#185fa5;--border-success:#3b6d11;--border-warning:#854f0b;
+  --blue:#3f86d4;--green-pip:#5DCAA5;--amber-pip:#FAC775;--ink-deep:#15171c;
+}}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg-secondary);color:var(--text-primary);min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* ── Header ── */
+header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
+.head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;flex-shrink:0;letter-spacing:-0.02em}
+.brand h1{font-size:17px;font-weight:600;letter-spacing:-0.01em;line-height:1.2}
+.brand p{font-size:11px;color:rgba(255,255,255,0.5);margin-top:1px;letter-spacing:0.02em}
+.head-note{font-size:11.5px;color:rgba(255,255,255,0.5);max-width:300px;text-align:right;line-height:1.45}
+
+/* ── Scope bar ── */
+.scope{background:var(--bg-primary);border:0.5px solid var(--border-light);border-radius:var(--radius-lg);padding:16px 18px;margin-top:-14px;position:relative;z-index:2;box-shadow:0 4px 18px rgba(0,0,0,0.05)}
+.scope-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.scope-head .lbl{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-tertiary)}
+.scope-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.scope-field label{display:block;font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-tertiary);margin-bottom:5px}
+.scope-field .sub{text-transform:none;letter-spacing:0;color:var(--text-tertiary);font-weight:400;opacity:0.8}
+.num-input{width:100%;font-family:var(--font);font-size:15px;font-weight:600;color:var(--text-primary);background:var(--bg-secondary);border:0.5px solid var(--border-light);border-radius:var(--radius-md);padding:8px 11px;outline:none;transition:border-color 0.15s;font-variant-numeric:tabular-nums}
+.num-input:focus{border-color:var(--blue)}
+.num-input::-webkit-inner-spin-button{opacity:0.4}
+
+/* ── Module toggles ── */
+.modbar{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 4px}
+.mod-toggle{display:flex;align-items:center;gap:7px;font-size:12.5px;font-family:var(--font);font-weight:500;padding:7px 13px 7px 11px;border-radius:30px;border:0.5px solid var(--border-mid);background:var(--bg-primary);color:var(--text-secondary);cursor:pointer;transition:all 0.13s;user-select:none}
+.mod-toggle:hover{border-color:var(--border-strong)}
+.mod-toggle .dot{width:8px;height:8px;border-radius:50%;background:var(--border-mid);transition:background 0.13s;flex-shrink:0}
+.mod-toggle.on{background:var(--bg-info);border-color:var(--border-info);color:var(--text-info);font-weight:600}
+.mod-toggle.on .dot{background:var(--blue)}
+
+/* ── Headline ── */
+.headline{background:var(--bg-primary);border:0.5px solid var(--border-light);border-radius:var(--radius-xl);padding:26px 26px 22px;margin:16px 0;overflow:hidden;position:relative}
+.headline::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--green-pip))}
+.hl-top{display:grid;grid-template-columns:1.3fr 1fr;gap:26px;align-items:center}
+@media(max-width:680px){.hl-top{grid-template-columns:1fr;gap:16px}}
+.hl-hours .big{font-size:46px;font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;color:var(--text-primary)}
+.hl-hours .big .u{font-size:19px;font-weight:600;color:var(--text-secondary);letter-spacing:0;margin-left:4px}
+.hl-hours .cap{font-size:12px;color:var(--text-secondary);margin-top:7px;line-height:1.4}
+.hl-dollar{border-left:0.5px solid var(--border-light);padding-left:24px}
+@media(max-width:680px){.hl-dollar{border-left:none;padding-left:0;border-top:0.5px solid var(--border-light);padding-top:16px}}
+.hl-dollar .eq{font-size:10.5px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-tertiary)}
+.hl-dollar .val{font-size:30px;font-weight:700;letter-spacing:-0.02em;color:var(--text-info);font-variant-numeric:tabular-nums;line-height:1.1;margin-top:3px}
+.hl-dollar .note{font-size:11px;color:var(--text-tertiary);margin-top:5px;line-height:1.4}
+.rate-row{display:flex;align-items:center;gap:8px;margin-top:11px}
+.rate-row label{font-size:11px;color:var(--text-tertiary)}
+.rate-input{width:92px;font-family:var(--font);font-size:12.5px;font-weight:600;color:var(--text-primary);background:var(--bg-secondary);border:0.5px solid var(--border-light);border-radius:6px;padding:5px 8px;outline:none;font-variant-numeric:tabular-nums}
+.rate-input:focus{border-color:var(--blue)}
+
+/* ── Soft benefits strip ── */
+.soft-strip{margin-top:20px;padding-top:18px;border-top:0.5px solid var(--border-light)}
+.soft-strip .lbl{font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:10px}
+.soft-chips{display:flex;gap:7px;flex-wrap:wrap}
+.soft-chip{font-size:11.5px;padding:5px 12px;border-radius:6px;background:var(--bg-success);color:var(--text-success);border:0.5px solid var(--border-success);font-weight:500}
+
+/* ── Module breakdown ── */
+.section-lbl{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-tertiary);margin:24px 0 12px}
+.mod-card{background:var(--bg-primary);border:0.5px solid var(--border-light);border-radius:var(--radius-lg);margin-bottom:12px;overflow:hidden;transition:opacity 0.2s}
+.mod-card.off{display:none}
+.mod-head{display:flex;align-items:center;gap:12px;padding:15px 18px;cursor:pointer;user-select:none}
+.mod-head:hover{background:var(--bg-secondary)}
+.mod-swatch{width:9px;height:34px;border-radius:4px;flex-shrink:0}
+.mod-title{flex:1;min-width:0}
+.mod-title .nm{font-size:14.5px;font-weight:600;letter-spacing:-0.01em}
+.mod-title .ds{font-size:11.5px;color:var(--text-tertiary);margin-top:1px}
+.mod-metric{text-align:right;flex-shrink:0}
+.mod-metric .h{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-0.01em}
+.mod-metric .hl{font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.04em}
+.mod-chev{font-size:11px;color:var(--text-tertiary);transition:transform 0.18s;flex-shrink:0;width:12px;text-align:center}
+.mod-chev.open{transform:rotate(90deg)}
+.mod-body{display:none;padding:4px 18px 16px;border-top:0.5px solid var(--border-light)}
+.mod-body.open{display:block}
+.driver{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:9px 0;border-bottom:0.5px solid var(--border-light)}
+.driver:last-child{border-bottom:none}
+.driver .dn{font-size:12.5px;color:var(--text-primary);font-weight:500}
+.driver .dd{font-size:11px;color:var(--text-tertiary);margin-top:1px;line-height:1.35}
+.driver .assum{font-size:11px;color:var(--text-secondary);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.driver .assum .e{display:inline-block;width:42px;text-align:right}
+.driver .assum input{width:46px;font-family:var(--font);font-size:11px;font-weight:600;color:var(--text-info);background:var(--bg-secondary);border:0.5px solid var(--border-light);border-radius:5px;padding:3px 5px;outline:none;text-align:right;font-variant-numeric:tabular-nums}
+.driver .assum input:focus{border-color:var(--blue)}
+.driver .dh{font-size:13px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;min-width:64px}
+.driver-soft{padding:11px 0 3px;display:flex;gap:6px;flex-wrap:wrap}
+.driver-soft .ds-chip{font-size:10.5px;padding:3px 9px;border-radius:5px;background:var(--bg-tertiary);color:var(--text-secondary);border:0.5px solid var(--border-mid)}
+
+/* ── Footer / actions ── */
+.actions{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:20px 0 8px}
+.assume-toggle{font-size:11.5px;color:var(--text-tertiary);cursor:pointer;display:flex;align-items:center;gap:7px;user-select:none}
+.assume-toggle input{accent-color:var(--blue);width:14px;height:14px;cursor:pointer}
+.btn-row{display:flex;gap:8px}
+.btn{font-family:var(--font);font-size:12.5px;font-weight:500;padding:8px 16px;border-radius:8px;cursor:pointer;transition:all 0.13s;border:0.5px solid var(--border-mid);background:var(--bg-primary);color:var(--text-secondary)}
+.btn:hover{border-color:var(--border-strong);color:var(--text-primary)}
+.btn-primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-primary:hover{filter:brightness(1.06);color:#fff}
+.assum-col{transition:opacity 0.2s}
+body:not(.show-assum) .assum .e,body:not(.show-assum) .assum input{display:none}
+body:not(.show-assum) .driver{grid-template-columns:1fr auto}
+.disclaimer{font-size:11px;color:var(--text-tertiary);line-height:1.55;border-top:0.5px solid var(--border-light);padding:16px 0 36px;margin-top:8px}
+.disclaimer b{color:var(--text-secondary);font-weight:600}
+.empty{text-align:center;color:var(--text-tertiary);font-size:13px;padding:36px 0}
+
+@media print{
+  header{background:var(--ink-deep)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .modbar,.actions,.mod-chev{display:none}
+  .mod-body{display:block!important}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head-row">
+    <div class="brand">
+      <div class="brand-mark">11</div>
+      <div>
+        <h1>Eleven Value Calculator</h1>
+        <p>Quantified benefit by module · estimate based on your deployment</p>
+      </div>
+    </div>
+    <p class="head-note">Set your scope, pick the modules in play, and see the operating time and risk you stand to recover each year.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- Scope inputs -->
+  <div class="scope">
+    <div class="scope-head"><span class="lbl">Your scope</span></div>
+    <div class="scope-grid">
+      <div class="scope-field">
+        <label>Properties <span class="sub">/ homes</span></label>
+        <input class="num-input" type="number" min="0" id="s-properties" value="5">
+      </div>
+      <div class="scope-field">
+        <label>Financial accounts <span class="sub">/ holdings</span></label>
+        <input class="num-input" type="number" min="0" id="s-accounts" value="40">
+      </div>
+      <div class="scope-field">
+        <label>Legal entities <span class="sub">LLCs / trusts</span></label>
+        <input class="num-input" type="number" min="0" id="s-entities" value="12">
+      </div>
+      <div class="scope-field">
+        <label>Family members</label>
+        <input class="num-input" type="number" min="0" id="s-family" value="6">
+      </div>
+      <div class="scope-field">
+        <label>Staff &amp; advisors <span class="sub">on platform</span></label>
+        <input class="num-input" type="number" min="0" id="s-staff" value="8">
+      </div>
+    </div>
+  </div>
+
+  <!-- Module toggles -->
+  <div class="modbar" id="modbar"></div>
+
+  <!-- Headline -->
+  <div class="headline">
+    <div class="hl-top">
+      <div class="hl-hours">
+        <div class="big"><span id="hl-hours">0</span><span class="u">hours / year</span></div>
+        <div class="cap">Operating time recovered across your team, the hours that go back into the principal instead of into hunting, chasing, and reconciling.</div>
+      </div>
+      <div class="hl-dollar">
+        <div class="eq">Equivalent value</div>
+        <div class="val" id="hl-dollar">$0</div>
+        <div class="note">Time valued at a blended loaded cost. Before risk and loss avoided, which compounds the case.</div>
+        <div class="rate-row">
+          <label for="rate">Loaded rate / hour</label>
+          <input class="rate-input" type="number" min="0" id="rate" value="125">
+        </div>
+      </div>
+    </div>
+    <div class="soft-strip">
+      <div class="lbl">Beyond the hours</div>
+      <div class="soft-chips" id="soft-chips"></div>
+    </div>
+  </div>
+
+  <!-- Breakdown -->
+  <div class="section-lbl">Where the value comes from</div>
+  <div id="breakdown"></div>
+  <div class="empty" id="empty" style="display:none">Select at least one module above to see the breakdown.</div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <label class="assume-toggle"><input type="checkbox" id="assum-toggle"> Show &amp; edit assumptions</label>
+    <div class="btn-row">
+      <button class="btn" id="btn-reset">Reset</button>
+      <button class="btn btn-primary" id="btn-print">Print / Save PDF</button>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <b>How to read this.</b> Figures are directional estimates, not a guarantee. Each driver multiplies your scope by an hours-saved assumption you can see and adjust under "Show &amp; edit assumptions," so every number on this page is one you can stand behind. The dollar figure converts recovered hours at the loaded rate you set; it deliberately excludes the harder-to-price benefits, fewer missed deadlines, lower coverage gaps, stronger privacy, faster decisions, that often matter more to a principal than the time itself.
+  </div>
+
+</div>
+
+<script>
+// ── Model ──────────────────────────────────────────────
+// scopeKey: which scope count drives this benefit
+// hpu: hours saved per unit per YEAR (editable assumption)
+// Numbers are conservative, defensible starting points.
+const MODULES = [
+  {
+    id:'property', name:'Eleven Property', color:'#185fa5',
+    desc:'Readiness, maintenance, issues, assets across homes',
+    soft:['Fewer arrival-day surprises','Lower repair risk','Clear accountability'],
+    drivers:[
+      {n:'Property readiness & pre-arrival', d:'Standardized turnover checklists per home', scope:'properties', hpu:34},
+      {n:'Preventative maintenance', d:'Scheduling and records that prevent missed upkeep', scope:'properties', hpu:26},
+      {n:'Issue reporting & resolution', d:'Nothing lost between email and text', scope:'properties', hpu:30},
+      {n:'Multi-property oversight', d:'Real-time portfolio status without chasing updates', scope:'properties', hpu:18},
+      {n:'Budgeting & expense tracking', d:'Budget vs actual visibility per property', scope:'properties', hpu:14},
+    ]
+  },
+  {
+    id:'financial', name:'Eleven Financial', color:'#3b6d11',
+    desc:'Net worth, reporting, private investments, entities',
+    soft:['Real-time vs quarterly','Fewer missed capital calls','Confident principal answers'],
+    drivers:[
+      {n:'Consolidated reporting', d:'Removes manual spreadsheet consolidation', scope:'accounts', hpu:7},
+      {n:'Real-time net worth', d:'On-demand view replaces report assembly', scope:'accounts', hpu:3.5},
+      {n:'Private investment tracking', d:'Capital calls, distributions, documents in one place', scope:'accounts', hpu:4},
+      {n:'Entity-level visibility', d:'Roll-ups across LLCs, trusts, holding companies', scope:'entities', hpu:18},
+      {n:'Document extraction', d:'Less manual pulling of data from PDFs', scope:'accounts', hpu:3},
+    ]
+  },
+  {
+    id:'family', name:'Eleven Family', color:'#854f0b',
+    desc:'Records, estate, travel, life administration',
+    soft:['Emergency-ready records','Residency compliance','Less life-admin drag'],
+    drivers:[
+      {n:'Centralized family records', d:'Passports, IDs, medical, memberships retrievable fast', scope:'family', hpu:16},
+      {n:'Travel & residency tracking', d:'Automatic day counting against thresholds', scope:'family', hpu:12},
+      {n:'Estate & insurance organization', d:'Documents and renewals in one place', scope:'family', hpu:9},
+      {n:'Life administration coordination', d:'Less staff time searching for details', scope:'staff', hpu:22},
+    ]
+  },
+  {
+    id:'ai', name:'AI Assistants', color:'#185fa5',
+    desc:'Instant answers, proactive monitoring, onboarding',
+    soft:['Faster decisions','Deadlines caught early','Knowledge preserved'],
+    drivers:[
+      {n:'Instant answers', d:'Self-serve retrieval instead of hunting across systems', scope:'staff', hpu:40},
+      {n:'Proactive risk & deadline monitoring', d:'Renewals, calls, maintenance surfaced before they slip', scope:'staff', hpu:14},
+      {n:'New-hire onboarding', d:'Institutional knowledge no longer trapped in people', scope:'staff', hpu:10},
+    ]
+  },
+  {
+    id:'platform', name:'Messages, Security & Vault', color:'#3b6d11',
+    desc:'Approvals, secure comms, access, audit trail',
+    soft:['Audit-ready approvals','Lower phishing exposure','Family owns the data'],
+    drivers:[
+      {n:'Approval workflows', d:'Documented audit trail replaces scattered threads', scope:'staff', hpu:12},
+      {n:'Secure communication', d:'In-platform replaces sensitive email', scope:'staff', hpu:8},
+      {n:'Credential & document vault', d:'Fast, secure retrieval of codes and records', scope:'staff', hpu:9},
+    ]
+  },
+];
+
+const DEFAULT_SCOPE = {properties:5,accounts:40,entities:12,family:6,staff:8};
+const DEFAULT_RATE = 125;
+
+let scope = {...DEFAULT_SCOPE};
+let rate = DEFAULT_RATE;
+let active = new Set(MODULES.map(m=>m.id));
+let openMods = new Set();
+// per-driver assumption overrides keyed "modId::driverIndex"
+let overrides = {};
+
+const $ = s=>document.querySelector(s);
+const fmtH = n=> Math.round(n).toLocaleString();
+const fmt$ = n=> '$'+Math.round(n).toLocaleString();
+
+function hpu(mId, idx, drv){
+  const k = mId+'::'+idx;
+  return (k in overrides) ? overrides[k] : drv.hpu;
+}
+function driverHours(mId, idx, drv){
+  return (scope[drv.scope]||0) * hpu(mId, idx, drv);
+}
+function moduleHours(m){
+  return m.drivers.reduce((s,d,i)=> s+driverHours(m.id,i,d), 0);
+}
+
+// ── Build module toggles ──
+function buildToggles(){
+  const bar = $('#modbar'); bar.innerHTML='';
+  MODULES.forEach(m=>{
+    const b=document.createElement('button');
+    b.className='mod-toggle'+(active.has(m.id)?' on':'');
+    b.innerHTML=`<span class="dot"></span>${m.name}`;
+    b.onclick=()=>{ active.has(m.id)?active.delete(m.id):active.add(m.id); render(); };
+    bar.appendChild(b);
+  });
+}
+
+// ── Build breakdown ──
+function buildBreakdown(){
+  const wrap=$('#breakdown'); wrap.innerHTML='';
+  const shown = MODULES.filter(m=>active.has(m.id));
+  $('#empty').style.display = shown.length? 'none':'block';
+  shown.forEach(m=>{
+    const h = moduleHours(m);
+    const card=document.createElement('div');
+    card.className='mod-card';
+    const isOpen=openMods.has(m.id);
+    let drv='';
+    m.drivers.forEach((d,i)=>{
+      const dh=driverHours(m.id,i,d);
+      drv+=`<div class="driver">
+        <div><div class="dn">${d.n}</div><div class="dd">${d.d}</div></div>
+        <div class="assum"><span class="e">${(scope[d.scope]||0)}×</span><input type="number" min="0" step="0.5" data-mod="${m.id}" data-idx="${i}" value="${hpu(m.id,i,d)}"> <span style="font-size:10px;color:var(--text-tertiary)">h</span></div>
+        <div class="dh">${fmtH(dh)} h</div>
+      </div>`;
+    });
+    const soft = m.soft.map(s=>`<span class="ds-chip">${s}</span>`).join('');
+    card.innerHTML=`
+      <div class="mod-head" data-mod="${m.id}">
+        <div class="mod-swatch" style="background:${m.color}"></div>
+        <div class="mod-title"><div class="nm">${m.name}</div><div class="ds">${m.desc}</div></div>
+        <div class="mod-metric"><div class="h">${fmtH(h)} h</div><div class="hl">${fmt$(h*rate)}/yr</div></div>
+        <div class="mod-chev${isOpen?' open':''}">▶</div>
+      </div>
+      <div class="mod-body${isOpen?' open':''}">
+        ${drv}
+        <div class="driver-soft">${soft}</div>
+      </div>`;
+    wrap.appendChild(card);
+  });
+  // wire head toggles
+  wrap.querySelectorAll('.mod-head').forEach(h=>{
+    h.onclick=()=>{ const id=h.dataset.mod; openMods.has(id)?openMods.delete(id):openMods.add(id); buildBreakdown(); };
+  });
+  // wire assumption inputs
+  wrap.querySelectorAll('.assum input').forEach(inp=>{
+    inp.onclick=e=>e.stopPropagation();
+    inp.oninput=()=>{
+      const k=inp.dataset.mod+'::'+inp.dataset.idx;
+      overrides[k]=parseFloat(inp.value)||0;
+      // update totals without full rebuild (keep focus)
+      updateTotals();
+      // update this module + driver line
+      const card=inp.closest('.mod-card');
+      const m=MODULES.find(x=>x.id===inp.dataset.mod);
+      card.querySelector('.mod-metric .h').textContent=fmtH(moduleHours(m))+' h';
+      card.querySelector('.mod-metric .hl').textContent=fmt$(moduleHours(m)*rate)+'/yr';
+      const dh=driverHours(m.id,+inp.dataset.idx,m.drivers[+inp.dataset.idx]);
+      inp.closest('.driver').querySelector('.dh').textContent=fmtH(dh)+' h';
+    };
+  });
+}
+
+// ── Totals + soft chips ──
+function totalHours(){
+  return MODULES.filter(m=>active.has(m.id)).reduce((s,m)=>s+moduleHours(m),0);
+}
+function updateTotals(){
+  const h=totalHours();
+  $('#hl-hours').textContent=fmtH(h);
+  $('#hl-dollar').textContent=fmt$(h*rate);
+}
+function buildSoft(){
+  const set=[];
+  MODULES.filter(m=>active.has(m.id)).forEach(m=> m.soft.forEach(s=>{ if(!set.includes(s)) set.push(s); }));
+  $('#soft-chips').innerHTML = set.length
+    ? set.map(s=>`<span class="soft-chip">${s}</span>`).join('')
+    : '<span style="font-size:12px;color:var(--text-tertiary)">Select a module to see qualitative benefits.</span>';
+}
+
+function render(){ buildToggles(); buildBreakdown(); updateTotals(); buildSoft(); }
+
+// ── Wire scope + rate ──
+['properties','accounts','entities','family','staff'].forEach(k=>{
+  $('#s-'+k).oninput=e=>{ scope[k]=Math.max(0,parseInt(e.target.value)||0); buildBreakdown(); updateTotals(); };
+});
+$('#rate').oninput=e=>{ rate=Math.max(0,parseInt(e.target.value)||0); buildBreakdown(); updateTotals(); };
+$('#assum-toggle').onchange=e=>{ document.body.classList.toggle('show-assum',e.target.checked); };
+$('#btn-print').onclick=()=>window.print();
+$('#btn-reset').onclick=()=>{
+  scope={...DEFAULT_SCOPE}; rate=DEFAULT_RATE; overrides={}; active=new Set(MODULES.map(m=>m.id)); openMods=new Set();
+  ['properties','accounts','entities','family','staff'].forEach(k=>$('#s-'+k).value=DEFAULT_SCOPE[k]);
+  $('#rate').value=DEFAULT_RATE; $('#assum-toggle').checked=false; document.body.classList.remove('show-assum');
+  render();
+};
+
+render();
+</script>
+</body>
+</html>
