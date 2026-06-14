@@ -31,6 +31,48 @@ html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg-secondary);color:var(--text-primary);min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5}
 .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
 
+/* ── Tabs ── */
+.tabnav{display:flex;gap:4px;margin-top:18px;border-bottom:0.5px solid var(--border-light)}
+.tab-btn{font-family:var(--font);font-size:13px;font-weight:500;padding:10px 16px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text-tertiary);cursor:pointer;transition:all 0.13s;margin-bottom:-0.5px}
+.tab-btn:hover{color:var(--text-secondary)}
+.tab-btn.active{color:var(--text-info);border-bottom-color:var(--blue);font-weight:600}
+.tabpane{display:none;padding-top:18px}
+.tabpane.active{display:block}
+
+/* ── Methodology ── */
+.method-intro{background:var(--bg-primary);border:0.5px solid var(--border-light);border-radius:var(--radius-lg);padding:20px 22px;margin-bottom:14px}
+.method-intro h2{font-size:16px;font-weight:600;letter-spacing:-0.01em;margin-bottom:8px}
+.method-intro p{font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:10px}
+.method-intro p:last-child{margin-bottom:0}
+.method-intro b{color:var(--text-primary);font-weight:600}
+.layer-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:680px){.layer-cards{grid-template-columns:1fr}}
+.layer-card{border-radius:var(--radius-md);padding:14px 16px;border:0.5px solid}
+.layer-card.problem{background:var(--bg-info);border-color:var(--border-info)}
+.layer-card.estimate{background:var(--bg-warning);border-color:var(--border-warning)}
+.layer-card .lc-tag{font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px}
+.layer-card.problem .lc-tag{color:var(--text-info)}
+.layer-card.estimate .lc-tag{color:var(--text-warning)}
+.layer-card p{font-size:12px;color:var(--text-secondary);line-height:1.55}
+.method-sec-lbl{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-tertiary);margin:22px 0 12px}
+.ref-card{background:var(--bg-primary);border:0.5px solid var(--border-light);border-radius:var(--radius-lg);margin-bottom:10px;overflow:hidden}
+.ref-head{display:flex;align-items:center;gap:11px;padding:13px 16px;border-bottom:0.5px solid var(--border-light)}
+.ref-swatch{width:8px;height:26px;border-radius:4px;flex-shrink:0}
+.ref-head .nm{font-size:13.5px;font-weight:600;letter-spacing:-0.01em}
+.ref-body{padding:13px 16px}
+.ref-line{display:grid;grid-template-columns:minmax(140px,0.9fr) 1fr;gap:14px;padding:8px 0;border-bottom:0.5px solid var(--border-light);align-items:start}
+.ref-line:last-child{border-bottom:none}
+@media(max-width:560px){.ref-line{grid-template-columns:1fr;gap:3px}}
+.ref-driver{font-size:12px;font-weight:600;color:var(--text-primary)}
+.ref-finding{font-size:11.5px;color:var(--text-secondary);line-height:1.5}
+.ref-finding .stat{color:var(--text-info);font-weight:600}
+.sources{background:var(--bg-tertiary);border:0.5px solid var(--border-light);border-radius:var(--radius-md);padding:14px 16px;margin-top:16px}
+.sources .s-lbl{font-size:10.5px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:7px}
+.sources p{font-size:11.5px;color:var(--text-secondary);line-height:1.55;margin-bottom:5px}
+.sources a{color:var(--text-info);text-decoration:none}
+.sources a:hover{text-decoration:underline}
+.sources .cav{font-size:11px;color:var(--text-tertiary);margin-top:8px;font-style:italic}
+
 /* ── Header ── */
 header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
 .head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
@@ -130,8 +172,10 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
 
 @media print{
   header{background:var(--ink-deep)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .modbar,.actions,.mod-chev{display:none}
+  .modbar,.actions,.mod-chev,.tabnav{display:none}
   .mod-body{display:block!important}
+  .tabpane{display:block!important;padding-top:0}
+  #pane-method{margin-top:24px;page-break-before:always}
   body{background:#fff}
 }
 </style>
@@ -180,6 +224,15 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
     </div>
   </div>
 
+  <!-- Tabs -->
+  <div class="tabnav">
+    <button class="tab-btn active" data-tab="calc">Calculator</button>
+    <button class="tab-btn" data-tab="method">Methodology &amp; References</button>
+  </div>
+
+  <!-- ── CALCULATOR PANE ── -->
+  <div class="tabpane active" id="pane-calc">
+
   <!-- Module toggles -->
   <div class="modbar" id="modbar"></div>
 
@@ -223,6 +276,88 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
   <div class="disclaimer">
     <b>How to read this.</b> Figures are directional estimates, not a guarantee. Each driver multiplies your scope by an hours-saved assumption you can see and adjust under "Show &amp; edit assumptions," so every number on this page is one you can stand behind. The dollar figure converts recovered hours at the loaded rate you set; it deliberately excludes the harder-to-price benefits, fewer missed deadlines, lower coverage gaps, stronger privacy, faster decisions, that often matter more to a principal than the time itself.
   </div>
+
+  </div><!-- /pane-calc -->
+
+  <!-- ── METHODOLOGY PANE ── -->
+  <div class="tabpane" id="pane-method">
+
+    <div class="method-intro">
+      <h2>How this model works</h2>
+      <p>Every headline figure is the same arithmetic: a scope count you enter (homes, accounts, entities, family members, staff), multiplied by an hours-saved-per-unit-per-year figure for each driver. Total hours convert to a dollar equivalent at the loaded rate you set. Nothing is hidden: turn on <b>Show &amp; edit assumptions</b> on the Calculator tab to see and adjust every per-unit number.</p>
+      <p>We separate two things on purpose, because that distinction is what makes the model defensible rather than a black box:</p>
+      <div class="layer-cards">
+        <div class="layer-card problem">
+          <div class="lc-tag">The problem · sourced</div>
+          <p>That each driver addresses a real, documented inefficiency in offices like yours. These premises are supported by independent family-office research, cited below.</p>
+        </div>
+        <div class="layer-card estimate">
+          <div class="lc-tag">The magnitude · Eleven estimate</div>
+          <p>The specific hours-per-unit figures are Eleven's conservative estimates, calibrated with pilot customers. No published study measures hours saved at this granularity; that number only ever comes from real deployments, including yours.</p>
+        </div>
+      </div>
+      <p>So the right way to read a footnote here is: the research establishes <i>that</i> the problem is real and widespread; the hours figure is our estimate of <i>how much</i> you recover, which we tune to your own before-and-after numbers as a pilot progresses.</p>
+    </div>
+
+    <div class="method-sec-lbl">What the research supports, by module</div>
+
+    <div class="ref-card">
+      <div class="ref-head"><div class="ref-swatch" style="background:#185fa5"></div><div class="nm">Eleven Financial &amp; AI Assistants</div></div>
+      <div class="ref-body">
+        <div class="ref-line">
+          <div class="ref-driver">Consolidated reporting, document extraction, instant answers</div>
+          <div class="ref-finding">Persistent reliance on spreadsheets and manual data aggregation remains a significant concern across the industry, and <span class="stat">only about a third of family offices</span> use leading-edge technology outside of investing. This is the exact manual burden these drivers remove.</div>
+        </div>
+        <div class="ref-line">
+          <div class="ref-driver">AI-assisted monitoring &amp; retrieval</div>
+          <div class="ref-finding">Interest in AI is high with early adoption underway in research, reporting, and risk; the model prices the time this shift gives back.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-card">
+      <div class="ref-head"><div class="ref-swatch" style="background:#854f0b"></div><div class="nm">Eleven Family</div></div>
+      <div class="ref-body">
+        <div class="ref-line">
+          <div class="ref-driver">Travel &amp; residency tracking, centralized records</div>
+          <div class="ref-finding"><span class="stat">57%</span> of family offices have at least one member living outside the office's primary jurisdiction, and supporting them is a high priority for <span class="stat">85%</span>, with tax, investment, and estate planning the most pressing issues. The cross-border complexity these drivers manage is documented, not assumed.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-card">
+      <div class="ref-head"><div class="ref-swatch" style="background:#185fa5"></div><div class="nm">Dollar conversion &amp; the talent lens</div></div>
+      <div class="ref-body">
+        <div class="ref-line">
+          <div class="ref-driver">Loaded-rate value of recovered hours</div>
+          <div class="ref-finding">Talent is the single largest operating expense for family offices, with <span class="stat">70%</span> reporting difficulty hiring and <span class="stat">65%</span> concerned about retention. When you cannot easily hire or retain, recovered staff hours are not just a cost saving, they are capacity you otherwise cannot buy.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-card">
+      <div class="ref-head"><div class="ref-swatch" style="background:#3b6d11"></div><div class="nm">Messages, Security &amp; Vault (soft benefits)</div></div>
+      <div class="ref-body">
+        <div class="ref-line">
+          <div class="ref-driver">Audit-ready approvals, knowledge preserved, emergency-ready records</div>
+          <div class="ref-finding">Two-thirds of offices lack a formal conflict-resolution mechanism and nearly half operate without a documented succession plan or constitution; staff turnover ranks among the most significant operational risks. These are the documented gaps the qualitative benefits speak to.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="method-sec-lbl">A note on positioning</div>
+    <div class="method-intro">
+      <p>The source report frames outsourcing as the primary answer to these gaps. Eleven's position is that a platform lets an office reach the same operational excellence while keeping data, control, and institutional knowledge in-house, an outcome the research itself values when it notes that <b>three out of four offices believe in-house teams deliver the most timely, highest-quality results</b>. The research is useful for establishing the problem; Eleven is the in-house path to the outcome it recommends.</p>
+    </div>
+
+    <div class="sources">
+      <div class="s-lbl">Source</div>
+      <p>Family-office benchmarks reference <i>The Family Office Operational Excellence Report 2025</i>, Campden Wealth in partnership with AlTi Tiedemann Global, based on 146 single family offices across North America, Europe, and Asia (survey conducted Nov 2024–Mar 2025).</p>
+      <p><a href="https://www.campdenwealth.com/report/family-office-operational-excellence-report-2025" target="_blank">campdenwealth.com/report/family-office-operational-excellence-report-2025</a></p>
+      <p class="cav">Research findings establish the prevalence of each operational problem. Hours-saved-per-unit figures are Eleven estimates, not drawn from this or any published report, and are intended to be calibrated with each customer's own data.</p>
+    </div>
+
+  </div><!-- /pane-method -->
 
 </div>
 
@@ -408,6 +543,17 @@ function render(){ buildToggles(); buildBreakdown(); updateTotals(); buildSoft()
 $('#rate').oninput=e=>{ rate=Math.max(0,parseInt(e.target.value)||0); buildBreakdown(); updateTotals(); };
 $('#assum-toggle').onchange=e=>{ document.body.classList.toggle('show-assum',e.target.checked); };
 $('#btn-print').onclick=()=>window.print();
+
+// ── Tab switching ──
+document.querySelectorAll('.tab-btn').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tabpane').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('pane-'+b.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+});
 $('#btn-reset').onclick=()=>{
   scope={...DEFAULT_SCOPE}; rate=DEFAULT_RATE; overrides={}; active=new Set(MODULES.map(m=>m.id)); openMods=new Set();
   ['properties','accounts','entities','family','staff'].forEach(k=>$('#s-'+k).value=DEFAULT_SCOPE[k]);
