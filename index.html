@@ -302,10 +302,14 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
   .ref-driver{color:#000!important}
   .ref-finding{color:#444!important}
   .ref-finding .stat{color:#185fa5!important}
-  .sources{background:#f7f6f3!important;border:1px solid #e2e0da!important;break-inside:avoid}
-  .sources p{color:#555!important}
+  .sources{background:#f7f6f3!important;border:1px solid #e2e0da!important;break-inside:avoid;padding:11px 14px!important}
+  .sources p{color:#555!important;margin-bottom:3px!important}
   .sources .cav{color:#888!important}
   .sources a{color:#185fa5!important}
+  /* Keep the positioning note + source on the same page */
+  .method-end{break-inside:avoid;page-break-inside:avoid}
+  .method-end .method-sec-lbl{margin-top:8px!important}
+  .method-end .method-intro{margin-bottom:10px!important}
 
   /* Print footer */
   .print-foot{display:flex!important;align-items:center;justify-content:space-between;
@@ -508,6 +512,7 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
       </div>
     </div>
 
+    <div class="method-end">
     <div class="method-sec-lbl">A note on positioning</div>
     <div class="method-intro">
       <p>The source report frames outsourcing as the primary answer to these gaps. Eleven's position is that a platform lets an office reach the same operational excellence while keeping data, control, and institutional knowledge in-house, an outcome the research itself values when it notes that <b>three out of four offices believe in-house teams deliver the most timely, highest-quality results</b>. The research is useful for establishing the problem; Eleven is the in-house path to the outcome it recommends.</p>
@@ -519,6 +524,7 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
       <p><a href="https://www.campdenwealth.com/report/family-office-operational-excellence-report-2025" target="_blank">campdenwealth.com/report/family-office-operational-excellence-report-2025</a></p>
       <p class="cav">Research findings establish the prevalence of each operational problem. Hours-saved-per-unit figures are Eleven estimates, not drawn from this or any published report, and are intended to be calibrated with each customer's own data.</p>
     </div>
+    </div><!-- /method-end -->
 
   </div><!-- /pane-method -->
 
