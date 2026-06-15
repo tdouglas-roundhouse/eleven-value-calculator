@@ -267,21 +267,32 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
   .hl-dollar .eq{color:#666!important}
   .hl-dollar .val{color:#185fa5!important;font-size:27px!important}
   .hl-dollar .note{color:#777!important}
-  .soft-strip{border-top:1px solid #eee!important}
   .soft-strip .lbl{color:#666!important}
   .soft-chip{background:#eaf3de!important;color:#3b6d11!important;border:1px solid #c0dd97!important;
     font-size:9.5px!important;padding:3px 8px!important}
-  .soft-right{border-left:1px solid #eee!important}
   .alloc-center .ac-num{color:#000!important}
   .alloc-center .ac-lbl{color:#666!important}
-  .alloc-leg-item .nm{color:#444!important}
   .alloc-leg-item .pct{color:#000!important}
-  /* Keep the headline card and its two-column strip whole on one page */
-  .headline{break-inside:avoid;page-break-inside:avoid}
-  .soft-strip{break-inside:avoid;page-break-inside:avoid;
-    display:grid!important;grid-template-columns:1.3fr 1fr!important;gap:26px!important;align-items:start!important}
-  .soft-left{break-inside:avoid}
-  .soft-chips{display:flex!important;flex-wrap:wrap!important;gap:5px!important}
+  /* Keep the headline card whole; if it won't fit in the space left on the
+     current page, push the entire card to the next page rather than splitting
+     it. Guarantees the strip never orphans, regardless of browser margins. */
+  .headline{break-inside:avoid!important;page-break-inside:avoid!important}
+  /* Print strip as a CSS table (paginates reliably in all print engines,
+     unlike grid/inline-block which fragment or wrap unpredictably). */
+  .soft-strip{display:table!important;width:100%!important;table-layout:fixed!important;
+    border-top:1px solid #eee!important;border-collapse:collapse;
+    break-inside:avoid;page-break-inside:avoid}
+  .soft-left{display:table-cell!important;vertical-align:top;width:54%!important;
+    padding-right:18px!important;box-sizing:border-box}
+  .soft-right{display:table-cell!important;vertical-align:top;width:46%!important;
+    border-left:1px solid #eee!important;padding-left:20px!important;box-sizing:border-box}
+  .soft-chips{display:block!important}
+  .soft-chip{display:inline-block!important;margin:0 4px 4px 0!important}
+  .alloc{display:table!important;width:100%}
+  .alloc-chart{display:table-cell!important;vertical-align:middle;width:120px}
+  .alloc-legend{display:table-cell!important;vertical-align:middle;padding-left:14px}
+  .alloc-leg-item .nm{color:#444!important;white-space:normal!important;overflow:visible!important;
+    text-overflow:clip!important;line-height:1.25}
 
   /* Section label: starts the breakdown on its own page */
   .section-lbl{color:#666!important;margin:0 0 12px!important;page-break-before:always;page-break-after:avoid;
