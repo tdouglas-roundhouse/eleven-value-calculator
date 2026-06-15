@@ -171,13 +171,147 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
 .disclaimer b{color:var(--text-secondary);font-weight:600}
 .empty{text-align:center;color:var(--text-tertiary);font-size:13px;padding:36px 0}
 
+/* Print-only elements hidden on screen */
+.print-meta,.print-foot,.scope-summary,.head-client,.read-intro{display:none}
+
+/* ── Print prep modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;
+  align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg-primary);border:0.5px solid var(--border-light);border-radius:var(--radius-xl);
+  padding:24px 24px 20px;max-width:420px;width:100%;box-shadow:0 16px 48px rgba(0,0,0,0.25)}
+.modal-title{font-size:17px;font-weight:600;letter-spacing:-0.01em;color:var(--text-primary)}
+.modal-sub{font-size:12.5px;color:var(--text-secondary);margin-top:5px;line-height:1.5}
+.modal-label{display:block;font-size:11px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;
+  color:var(--text-tertiary);margin:18px 0 6px}
+.modal-input{width:100%;font-family:var(--font);font-size:14px;color:var(--text-primary);
+  background:var(--bg-secondary);border:0.5px solid var(--border-light);border-radius:var(--radius-md);
+  padding:10px 12px;outline:none;transition:border-color 0.15s}
+.modal-input:focus{border-color:var(--blue)}
+.modal-hint{font-size:11px;color:var(--text-tertiary);margin-top:6px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}
+
 @media print{
-  header{background:var(--ink-deep)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .modbar,.actions,.mod-chev,.tabnav{display:none}
-  .mod-body{display:block!important}
+  @page{margin:14mm 14mm 16mm}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  html,body{background:#fff!important;font-size:10.5pt}
+  .wrap{max-width:100%;padding:0}
+
+  /* Hide interactive chrome */
+  .modbar,.actions,.mod-chev,.tabnav,.rate-row,.scope-head,.modal-overlay{display:none!important}
+
+  /* Header: compact band, larger mark */
+  header{background:#000!important;color:#fff!important;padding:16px 16px!important;border-radius:0;position:relative}
+  .head-row{padding:0!important}
+  .brand-mark{width:46px!important;height:46px!important}
+  .brand-mark img{width:46px!important;height:46px!important}
+  .brand h1{font-size:18px!important}
+  .head-note{display:none!important}
+  .head-client{display:block!important;position:absolute;right:16px;bottom:16px;text-align:right;color:#fff!important}
+  .head-client .hc-for{font-size:8.5px;letter-spacing:0.09em;text-transform:uppercase;color:rgba(255,255,255,0.55)}
+  .head-client .hc-name{font-size:14px;font-weight:600;letter-spacing:-0.01em;margin-top:2px}
+
+  /* Print document meta line */
+  .print-meta{display:flex!important;align-items:baseline;justify-content:space-between;
+    padding:10px 2px 4px;border-bottom:1.5px solid #000;margin-bottom:14px}
+  .pm-title{font-size:13px;font-weight:700;letter-spacing:-0.01em;color:#000}
+  .pm-sub{font-size:9.5px;color:#555;margin-left:10px}
+  .pm-right{font-size:9.5px;color:#555}
+
+  /* Hide live input scope; show formatted summary */
+  .scope{display:none!important}
+  .scope-summary{display:block!important;border:1px solid #ddd;border-radius:8px;
+    padding:14px 16px 16px;margin:0 0 18px;break-inside:avoid}
+  .ss-lbl{font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
+    color:#666;margin-bottom:12px}
+  .ss-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0}
+  .ss-item{display:flex;flex-direction:column;align-items:center;text-align:center;
+    padding:0 8px;border-right:1px solid #ececec}
+  .ss-item:last-child{border-right:none}
+  .ss-num{font-size:30px;font-weight:700;letter-spacing:-0.02em;color:#000;line-height:1;
+    font-variant-numeric:tabular-nums}
+  .ss-cap{font-size:10px;color:#555;margin-top:7px;line-height:1.35;display:flex;flex-direction:column}
+  .ss-cap small{font-size:8.5px;color:#999;margin-top:1px}
+
+  /* "How to read this" intro, framed as a header on page 1 */
+  .read-intro{display:block!important;background:#f7f6f3!important;border:1px solid #e2e0da;
+    border-left:3px solid #185fa5;border-radius:8px;padding:13px 16px;margin:0 0 18px;break-inside:avoid}
+  .ri-title{font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
+    color:#185fa5;margin-bottom:6px}
+  .read-intro p{font-size:9.5pt;line-height:1.55;color:#444;margin:0}
+
+  /* Headline: keep contrast, force fills */
+  .headline{background:#fff!important;border:1px solid #ddd!important;break-inside:avoid;
+    margin:0 0 18px!important;padding:18px 20px!important}
+  .headline::before{background:linear-gradient(90deg,#185fa5,#1D9E75)!important;height:4px!important}
+  .hl-hours .big{color:#000!important;font-size:40px!important}
+  .hl-hours .big .u{color:#444!important}
+  .hl-hours .cap{color:#444!important}
+  .hl-dollar{border-left:1px solid #ddd!important}
+  .hl-dollar .eq{color:#666!important}
+  .hl-dollar .val{color:#185fa5!important;font-size:27px!important}
+  .hl-dollar .note{color:#777!important}
+  .soft-strip{border-top:1px solid #eee!important}
+  .soft-strip .lbl{color:#666!important}
+  .soft-chip{background:#eaf3de!important;color:#3b6d11!important;border:1px solid #c0dd97!important}
+
+  /* Section label: starts the breakdown on its own page */
+  .section-lbl{color:#666!important;margin:0 0 12px!important;page-break-before:always;page-break-after:avoid;
+    font-size:12px!important;font-weight:700!important;letter-spacing:0.04em!important;
+    padding-bottom:8px;border-bottom:1px solid #ddd}
+
+  /* Module cards: never split across pages */
   .tabpane{display:block!important;padding-top:0}
-  #pane-method{margin-top:24px;page-break-before:always}
-  body{background:#fff}
+  .mod-card{background:#fff!important;border:1px solid #ddd!important;break-inside:avoid;
+    page-break-inside:avoid;margin-bottom:10px!important}
+  .mod-head{padding:11px 16px!important}
+  .mod-title .nm{color:#000!important;font-size:14px!important}
+  .mod-title .ds{color:#777!important}
+  .mod-metric .h{color:#000!important}
+  .mod-metric .hl{color:#777!important}
+  .mod-body{display:block!important;border-top:1px solid #eee!important;padding:2px 16px 12px!important}
+
+  /* CRITICAL: show the hours number in print.
+     On screen the per-unit number hides unless show-assum; in print we
+     instead reveal the computed hours (.dh) which is always populated,
+     and keep the layout two-column so it reads cleanly. */
+  .driver{grid-template-columns:1fr auto!important;padding:7px 0!important;border-bottom:1px solid #f0f0f0!important}
+  .driver .assum{display:none!important}
+  .driver .dn{color:#000!important;font-size:12px!important}
+  .driver .dd{color:#888!important}
+  .driver .dh{color:#000!important;font-size:12.5px!important;min-width:70px!important}
+  .driver-soft .ds-chip{background:#f3f2ee!important;color:#555!important;border:1px solid #ddd!important}
+
+  /* Disclaimer moved to top in print */
+  .disclaimer{display:none!important}
+
+  /* Methodology starts on a fresh page */
+  #pane-method{page-break-before:always;margin-top:0}
+  .method-intro{background:#fff!important;border:1px solid #ddd!important;break-inside:avoid}
+  .method-intro h2{color:#000!important}
+  .method-intro p{color:#444!important}
+  .method-intro b{color:#000!important}
+  .layer-card.problem{background:#e6f1fb!important;border:1px solid #b5d4f4!important}
+  .layer-card.estimate{background:#faeeda!important;border:1px solid #fac775!important}
+  .layer-card.problem .lc-tag{color:#185fa5!important}
+  .layer-card.estimate .lc-tag{color:#854f0b!important}
+  .layer-card p{color:#444!important}
+  .method-sec-lbl{color:#666!important;page-break-after:avoid}
+  .ref-card{background:#fff!important;border:1px solid #ddd!important;break-inside:avoid;page-break-inside:avoid}
+  .ref-head .nm{color:#000!important}
+  .ref-driver{color:#000!important}
+  .ref-finding{color:#444!important}
+  .ref-finding .stat{color:#185fa5!important}
+  .sources{background:#f7f6f3!important;border:1px solid #e2e0da!important;break-inside:avoid}
+  .sources p{color:#555!important}
+  .sources .cav{color:#888!important}
+  .sources a{color:#185fa5!important}
+
+  /* Print footer */
+  .print-foot{display:flex!important;align-items:center;justify-content:space-between;
+    border-top:1px solid #ccc;margin-top:18px;padding-top:8px;font-size:9pt;color:#888}
+  .pf-brand{font-weight:700;color:#000;letter-spacing:0.04em}
+  .pf-conf{font-style:italic}
 }
 </style>
 </head>
@@ -193,8 +327,18 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
       </div>
     </div>
     <p class="head-note">Set your scope, pick the modules in play, and see the operating time and risk you stand to recover each year.</p>
+    <div class="head-client" id="head-client"></div>
   </div>
 </header>
+
+<!-- Print-only document meta -->
+<div class="print-meta">
+  <div class="pm-left">
+    <span class="pm-title">Value Estimate</span>
+    <span class="pm-sub">Prepared for review · figures based on the deployment scope below</span>
+  </div>
+  <div class="pm-right"><span id="print-date"></span></div>
+</div>
 
 <div class="wrap">
 
@@ -223,6 +367,24 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
         <input class="num-input" type="number" min="0" id="s-staff" value="8">
       </div>
     </div>
+  </div>
+
+  <!-- Print-only scope summary -->
+  <div class="scope-summary">
+    <div class="ss-lbl">Deployment scope</div>
+    <div class="ss-grid">
+      <div class="ss-item"><span class="ss-num" id="ss-properties">0</span><span class="ss-cap">Properties<small>homes</small></span></div>
+      <div class="ss-item"><span class="ss-num" id="ss-accounts">0</span><span class="ss-cap">Financial accounts<small>holdings</small></span></div>
+      <div class="ss-item"><span class="ss-num" id="ss-entities">0</span><span class="ss-cap">Legal entities<small>LLCs / trusts</small></span></div>
+      <div class="ss-item"><span class="ss-num" id="ss-family">0</span><span class="ss-cap">Family members</span></div>
+      <div class="ss-item"><span class="ss-num" id="ss-staff">0</span><span class="ss-cap">Staff &amp; advisors<small>on platform</small></span></div>
+    </div>
+  </div>
+
+  <!-- Print-only "how to read" intro (mirrors the footnote, shown as a header on page 1) -->
+  <div class="read-intro">
+    <div class="ri-title">How to read this estimate</div>
+    <p>Figures are directional estimates, not a guarantee. Each driver multiplies your scope by an hours-saved assumption you can see and adjust, so every number here is one you can stand behind. The dollar figure converts recovered hours at the loaded rate shown; it deliberately excludes the harder-to-price benefits (fewer missed deadlines, lower coverage gaps, stronger privacy, faster decisions) that often matter more to a principal than the time itself.</p>
   </div>
 
   <!-- Tabs -->
@@ -360,6 +522,28 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
 
   </div><!-- /pane-method -->
 
+  <!-- Print-only footer -->
+  <div class="print-foot">
+    <span class="pf-brand">Eleven</span>
+    <span class="pf-conf">Confidential · for the named recipient only</span>
+    <span class="pf-page"></span>
+  </div>
+
+</div>
+
+<!-- Print prep modal -->
+<div class="modal-overlay" id="print-modal">
+  <div class="modal">
+    <div class="modal-title">Prepare for print</div>
+    <div class="modal-sub">Personalize this estimate before you print or save it as a PDF.</div>
+    <label class="modal-label" for="client-name">Prepared for (optional)</label>
+    <input class="modal-input" type="text" id="client-name" placeholder="e.g. The Borealis Family Office" autocomplete="off">
+    <div class="modal-hint">Appears in the header of the printed document.</div>
+    <div class="modal-actions">
+      <button class="btn" id="modal-cancel">Cancel</button>
+      <button class="btn btn-primary" id="modal-print">Print / Save PDF</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -526,6 +710,11 @@ function updateTotals(){
   const h=totalHours();
   $('#hl-hours').textContent=fmtH(h);
   $('#hl-dollar').textContent=fmt$(h*rate);
+  // keep print scope summary in sync
+  ['properties','accounts','entities','family','staff'].forEach(k=>{
+    const el=document.getElementById('ss-'+k);
+    if(el) el.textContent=(scope[k]||0).toLocaleString();
+  });
 }
 function buildSoft(){
   const set=[];
@@ -543,7 +732,28 @@ function render(){ buildToggles(); buildBreakdown(); updateTotals(); buildSoft()
 });
 $('#rate').oninput=e=>{ rate=Math.max(0,parseInt(e.target.value)||0); buildBreakdown(); updateTotals(); };
 $('#assum-toggle').onchange=e=>{ document.body.classList.toggle('show-assum',e.target.checked); };
-$('#btn-print').onclick=()=>window.print();
+// ── Print prep modal ──
+const modal=document.getElementById('print-modal');
+const clientInput=document.getElementById('client-name');
+function setHeaderClient(name){
+  const slot=document.getElementById('head-client');
+  if(name && name.trim()){
+    slot.innerHTML='<div class="hc-for">Prepared for</div><div class="hc-name"></div>';
+    slot.querySelector('.hc-name').textContent=name.trim();
+  } else {
+    slot.innerHTML='';
+  }
+}
+$('#btn-print').onclick=()=>{ modal.classList.add('open'); setTimeout(()=>clientInput.focus(),50); };
+$('#modal-cancel').onclick=()=>modal.classList.remove('open');
+modal.addEventListener('click',e=>{ if(e.target===modal) modal.classList.remove('open'); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') modal.classList.remove('open'); });
+$('#modal-print').onclick=()=>{
+  setHeaderClient(clientInput.value);
+  modal.classList.remove('open');
+  setTimeout(()=>window.print(),120);
+};
+clientInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('#modal-print').click(); } });
 
 // ── Tab switching ──
 document.querySelectorAll('.tab-btn').forEach(b=>{
@@ -563,6 +773,13 @@ $('#btn-reset').onclick=()=>{
 };
 
 render();
+
+// Print date stamp
+(function(){
+  const d=new Date();
+  const el=document.getElementById('print-date');
+  if(el) el.textContent=d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+})();
 </script>
 </body>
 </html>
