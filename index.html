@@ -105,7 +105,7 @@ header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
 /* ── Headline ── */
 .headline{background:var(--bg-primary);border:0.5px solid var(--border-light);border-radius:var(--radius-xl);padding:26px 26px 22px;margin:16px 0;overflow:hidden;position:relative}
 .headline::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--green-pip))}
-.hl-top{display:grid;grid-template-columns:1.3fr 1fr;gap:26px;align-items:center}
+.hl-top{display:grid;grid-template-columns:minmax(0,58%) minmax(0,42%);gap:26px;align-items:center}
 @media(max-width:680px){.hl-top{grid-template-columns:1fr;gap:16px}}
 .hl-hours .big{font-size:46px;font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;color:var(--text-primary)}
 .hl-hours .big .u{font-size:19px;font-weight:600;color:var(--text-secondary);letter-spacing:0;margin-left:4px}
@@ -122,7 +122,7 @@ header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
 
 /* ── Soft benefits strip + allocation (standalone card) ── */
 .soft-strip-wrap{background:var(--bg-primary);border:0.5px solid var(--border-light);border-radius:var(--radius-xl);padding:22px 26px;margin:12px 0 16px}
-.soft-strip{display:grid;grid-template-columns:1.3fr 1fr;gap:26px;align-items:start}
+.soft-strip{display:grid;grid-template-columns:minmax(0,58%) minmax(0,42%);gap:26px;align-items:start}
 @media(max-width:680px){.soft-strip{grid-template-columns:1fr;gap:20px}}
 .soft-strip .lbl{font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:10px}
 .soft-right{border-left:0.5px solid var(--border-light);padding-left:24px}
@@ -274,10 +274,17 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
   .alloc-center .ac-lbl{color:#666!important}
   .alloc-leg-item .pct{color:#000!important}
   /* Headline card is now compact (hours + equivalent value only); fits page 1. */
-  .headline{break-inside:avoid!important;page-break-inside:avoid!important}
+  .headline{break-inside:avoid!important;page-break-inside:avoid!important;padding:18px 20px!important}
+  /* Print both cards as CSS tables with identical column widths so the divider
+     lines align perfectly (WebKit resolves fr-grids differently per card). */
+  .hl-top{display:table!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse}
+  .hl-hours{display:table-cell!important;vertical-align:middle;width:54%!important;
+    padding-right:18px!important;box-sizing:border-box}
+  .hl-dollar{display:table-cell!important;vertical-align:middle;width:46%!important;
+    border-left:1px solid #ddd!important;padding-left:20px!important;box-sizing:border-box}
   /* Standalone strip card: keeps whole, flows to next page as a unit if needed. */
   .soft-strip-wrap{background:#fff!important;border:1px solid #ddd!important;
-    break-inside:avoid!important;page-break-inside:avoid!important;padding:16px 20px!important;margin:10px 0!important}
+    break-inside:avoid!important;page-break-inside:avoid!important;padding:18px 20px!important;margin:10px 0!important}
   /* Strip as a CSS table (paginates reliably across print engines). */
   .soft-strip{display:table!important;width:100%!important;table-layout:fixed!important;
     border-collapse:collapse}
