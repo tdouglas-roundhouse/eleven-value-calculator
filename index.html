@@ -296,8 +296,13 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
   .layer-card.problem .lc-tag{color:#185fa5!important}
   .layer-card.estimate .lc-tag{color:#854f0b!important}
   .layer-card p{color:#444!important}
-  .method-sec-lbl{color:#666!important;page-break-after:avoid}
-  .ref-card{background:#fff!important;border:1px solid #ddd!important;break-inside:avoid;page-break-inside:avoid}
+  .method-sec-lbl{color:#666!important;page-break-after:avoid;margin:18px 0 12px!important;
+    font-size:12px!important;font-weight:700!important;letter-spacing:0.04em!important;
+    padding-bottom:8px;border-bottom:1px solid #ddd}
+  .ref-card{background:#fff!important;border:1px solid #ddd!important;break-inside:avoid;page-break-inside:avoid;margin-bottom:8px!important}
+  .ref-card .ref-head{padding:10px 16px!important}
+  .ref-card .ref-body{padding:10px 16px!important}
+  .ref-card .ref-line{padding:6px 0!important}
   .ref-head .nm{color:#000!important}
   .ref-driver{color:#000!important}
   .ref-finding{color:#444!important}
@@ -313,7 +318,7 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
 
   /* Print footer */
   .print-foot{display:flex!important;align-items:center;justify-content:space-between;
-    border-top:1px solid #ccc;margin-top:18px;padding-top:8px;font-size:9pt;color:#888}
+    border-top:1px solid #ccc;margin-top:12px;padding-top:7px;font-size:9pt;color:#888}
   .pf-brand{font-weight:700;color:#000;letter-spacing:0.04em}
   .pf-conf{font-style:italic}
 }
