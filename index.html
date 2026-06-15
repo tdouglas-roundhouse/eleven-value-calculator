@@ -120,11 +120,27 @@ header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
 .rate-input{width:92px;font-family:var(--font);font-size:12.5px;font-weight:600;color:var(--text-primary);background:var(--bg-secondary);border:0.5px solid var(--border-light);border-radius:6px;padding:5px 8px;outline:none;font-variant-numeric:tabular-nums}
 .rate-input:focus{border-color:var(--blue)}
 
-/* ── Soft benefits strip ── */
-.soft-strip{margin-top:20px;padding-top:18px;border-top:0.5px solid var(--border-light)}
+/* ── Soft benefits strip + allocation ── */
+.soft-strip{margin-top:20px;padding-top:18px;border-top:0.5px solid var(--border-light);
+  display:grid;grid-template-columns:1.3fr 1fr;gap:26px;align-items:start}
+@media(max-width:680px){.soft-strip{grid-template-columns:1fr;gap:20px}}
 .soft-strip .lbl{font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:10px}
+.soft-right{border-left:0.5px solid var(--border-light);padding-left:24px}
+@media(max-width:680px){.soft-right{border-left:none;padding-left:0;border-top:0.5px solid var(--border-light);padding-top:16px}}
 .soft-chips{display:flex;gap:7px;flex-wrap:wrap}
 .soft-chip{font-size:11.5px;padding:5px 12px;border-radius:6px;background:var(--bg-success);color:var(--text-success);border:0.5px solid var(--border-success);font-weight:500}
+.alloc{display:flex;align-items:center;gap:20px}
+.alloc-chart{flex-shrink:0;width:116px;height:116px;position:relative}
+.alloc-chart svg{width:116px;height:116px;transform:rotate(-90deg)}
+.alloc-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+.alloc-center .ac-num{font-size:16px;font-weight:700;letter-spacing:-0.02em;color:var(--text-primary);font-variant-numeric:tabular-nums;line-height:1}
+.alloc-center .ac-lbl{font-size:8px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-tertiary);margin-top:2px}
+.alloc-legend{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.alloc-leg-item{display:flex;align-items:center;gap:8px;font-size:11.5px}
+.alloc-leg-item .swatch{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.alloc-leg-item .nm{color:var(--text-secondary);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.alloc-leg-item .pct{color:var(--text-primary);font-weight:600;font-variant-numeric:tabular-nums}
+.alloc-empty{font-size:11.5px;color:var(--text-tertiary)}
 
 /* ── Module breakdown ── */
 .section-lbl{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-tertiary);margin:24px 0 12px}
@@ -254,6 +270,11 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
   .soft-strip{border-top:1px solid #eee!important}
   .soft-strip .lbl{color:#666!important}
   .soft-chip{background:#eaf3de!important;color:#3b6d11!important;border:1px solid #c0dd97!important}
+  .soft-right{border-left:1px solid #eee!important}
+  .alloc-center .ac-num{color:#000!important}
+  .alloc-center .ac-lbl{color:#666!important}
+  .alloc-leg-item .nm{color:#444!important}
+  .alloc-leg-item .pct{color:#000!important}
 
   /* Section label: starts the breakdown on its own page */
   .section-lbl{color:#666!important;margin:0 0 12px!important;page-break-before:always;page-break-after:avoid;
@@ -311,10 +332,11 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
   .sources p{color:#555!important;margin-bottom:3px!important}
   .sources .cav{color:#888!important}
   .sources a{color:#185fa5!important}
-  /* Keep the positioning note + source on the same page */
-  .method-end{break-inside:avoid;page-break-inside:avoid}
-  .method-end .method-sec-lbl{margin-top:8px!important}
-  .method-end .method-intro{margin-bottom:10px!important}
+  /* Let the positioning note and source flow naturally; each piece avoids
+     splitting internally, but they are NOT bound together (binding made the
+     combined block too tall to place, pushing it to an empty page). */
+  .method-end .method-sec-lbl{margin-top:18px!important}
+  .method-end .method-intro{margin-bottom:10px!important;break-inside:avoid}
 
   /* Print footer */
   .print-foot{display:flex!important;align-items:center;justify-content:space-between;
@@ -426,8 +448,17 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
       </div>
     </div>
     <div class="soft-strip">
-      <div class="lbl">Beyond the hours</div>
-      <div class="soft-chips" id="soft-chips"></div>
+      <div class="soft-left">
+        <div class="lbl">Beyond the hours</div>
+        <div class="soft-chips" id="soft-chips"></div>
+      </div>
+      <div class="soft-right">
+        <div class="lbl">Value allocation</div>
+        <div class="alloc">
+          <div class="alloc-chart"><svg id="alloc-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"></svg></div>
+          <div class="alloc-legend" id="alloc-legend"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -709,6 +740,7 @@ function buildBreakdown(){
       card.querySelector('.mod-metric .hl').textContent=fmt$(moduleHours(m)*rate)+'/yr';
       const dh=driverHours(m.id,+inp.dataset.idx,m.drivers[+inp.dataset.idx]);
       inp.closest('.driver').querySelector('.dh').textContent=fmtH(dh)+' h';
+      buildAlloc();
     };
   });
 }
@@ -735,11 +767,41 @@ function buildSoft(){
     : '<span style="font-size:12px;color:var(--text-tertiary)">Select a module to see qualitative benefits.</span>';
 }
 
-function render(){ buildToggles(); buildBreakdown(); updateTotals(); buildSoft(); }
+function buildAlloc(){
+  const svg=document.getElementById('alloc-svg');
+  const legend=document.getElementById('alloc-legend');
+  const mods=MODULES.filter(m=>active.has(m.id)).map(m=>({m,h:moduleHours(m)})).filter(x=>x.h>0);
+  const total=mods.reduce((s,x)=>s+x.h,0);
+  if(!total){
+    svg.innerHTML=''; legend.innerHTML='<span class="alloc-empty">Select a module to see allocation.</span>';
+    return;
+  }
+  const R=46, C=2*Math.PI*R, cx=60, cy=60, sw=15;
+  let off=0, arcs='';
+  mods.forEach(x=>{
+    const frac=x.h/total, len=frac*C;
+    arcs+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${x.m.color}" stroke-width="${sw}" `
+        +`stroke-dasharray="${len.toFixed(2)} ${(C-len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}"/>`;
+    off+=len;
+  });
+  svg.innerHTML=arcs;
+  // center overlay (added once, kept in sync)
+  let ctr=svg.parentElement.querySelector('.alloc-center');
+  if(!ctr){ ctr=document.createElement('div'); ctr.className='alloc-center'; svg.parentElement.appendChild(ctr); }
+  ctr.innerHTML=`<div class="ac-num">${fmtH(total)}</div><div class="ac-lbl">hours/yr</div>`;
+  // legend, largest share first
+  legend.innerHTML=mods.slice().sort((a,b)=>b.h-a.h).map(x=>{
+    const pct=Math.round(x.h/total*100);
+    return `<div class="alloc-leg-item"><span class="swatch" style="background:${x.m.color}"></span>`
+         +`<span class="nm">${x.m.name.replace('Eleven ','')}</span><span class="pct">${pct}%</span></div>`;
+  }).join('');
+}
+
+function render(){ buildToggles(); buildBreakdown(); updateTotals(); buildSoft(); buildAlloc(); }
 
 // ── Wire scope + rate ──
 ['properties','accounts','entities','family','staff'].forEach(k=>{
-  $('#s-'+k).oninput=e=>{ scope[k]=Math.max(0,parseInt(e.target.value)||0); buildBreakdown(); updateTotals(); };
+  $('#s-'+k).oninput=e=>{ scope[k]=Math.max(0,parseInt(e.target.value)||0); buildBreakdown(); updateTotals(); buildAlloc(); };
 });
 $('#rate').oninput=e=>{ rate=Math.max(0,parseInt(e.target.value)||0); buildBreakdown(); updateTotals(); };
 $('#assum-toggle').onchange=e=>{ document.body.classList.toggle('show-assum',e.target.checked); };
