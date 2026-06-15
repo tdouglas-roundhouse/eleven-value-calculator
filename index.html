@@ -120,9 +120,9 @@ header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
 .rate-input{width:92px;font-family:var(--font);font-size:12.5px;font-weight:600;color:var(--text-primary);background:var(--bg-secondary);border:0.5px solid var(--border-light);border-radius:6px;padding:5px 8px;outline:none;font-variant-numeric:tabular-nums}
 .rate-input:focus{border-color:var(--blue)}
 
-/* ── Soft benefits strip + allocation ── */
-.soft-strip{margin-top:20px;padding-top:18px;border-top:0.5px solid var(--border-light);
-  display:grid;grid-template-columns:1.3fr 1fr;gap:26px;align-items:start}
+/* ── Soft benefits strip + allocation (standalone card) ── */
+.soft-strip-wrap{background:var(--bg-primary);border:0.5px solid var(--border-light);border-radius:var(--radius-xl);padding:22px 26px;margin:12px 0 16px}
+.soft-strip{display:grid;grid-template-columns:1.3fr 1fr;gap:26px;align-items:start}
 @media(max-width:680px){.soft-strip{grid-template-columns:1fr;gap:20px}}
 .soft-strip .lbl{font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:10px}
 .soft-right{border-left:0.5px solid var(--border-light);padding-left:24px}
@@ -273,15 +273,14 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
   .alloc-center .ac-num{color:#000!important}
   .alloc-center .ac-lbl{color:#666!important}
   .alloc-leg-item .pct{color:#000!important}
-  /* Keep the headline card whole; if it won't fit in the space left on the
-     current page, push the entire card to the next page rather than splitting
-     it. Guarantees the strip never orphans, regardless of browser margins. */
+  /* Headline card is now compact (hours + equivalent value only); fits page 1. */
   .headline{break-inside:avoid!important;page-break-inside:avoid!important}
-  /* Print strip as a CSS table (paginates reliably in all print engines,
-     unlike grid/inline-block which fragment or wrap unpredictably). */
+  /* Standalone strip card: keeps whole, flows to next page as a unit if needed. */
+  .soft-strip-wrap{background:#fff!important;border:1px solid #ddd!important;
+    break-inside:avoid!important;page-break-inside:avoid!important;padding:16px 20px!important;margin:10px 0!important}
+  /* Strip as a CSS table (paginates reliably across print engines). */
   .soft-strip{display:table!important;width:100%!important;table-layout:fixed!important;
-    border-top:1px solid #eee!important;border-collapse:collapse;
-    break-inside:avoid;page-break-inside:avoid}
+    border-collapse:collapse}
   .soft-left{display:table-cell!important;vertical-align:top;width:54%!important;
     padding-right:18px!important;box-sizing:border-box}
   .soft-right{display:table-cell!important;vertical-align:top;width:46%!important;
@@ -465,6 +464,10 @@ body:not(.show-assum) .driver{grid-template-columns:1fr auto}
         </div>
       </div>
     </div>
+  </div><!-- /headline -->
+
+  <!-- Value strip: standalone block, flows independently of the headline card -->
+  <div class="soft-strip-wrap">
     <div class="soft-strip">
       <div class="soft-left">
         <div class="lbl">Beyond the hours</div>
