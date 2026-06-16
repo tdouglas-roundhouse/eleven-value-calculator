@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eleven · Value Calculator</title>
+<title>Eleven · Value Assessment</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -177,6 +177,9 @@ header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
 .driver .dvals .dd-dollar{font-size:11px;font-weight:600;color:var(--text-info);font-variant-numeric:tabular-nums;margin-top:1px}
 .driver-soft{padding:11px 0 3px;display:flex;gap:6px;flex-wrap:wrap}
 .driver-soft .ds-chip{font-size:10.5px;padding:3px 9px;border-radius:5px;background:var(--bg-tertiary);color:var(--text-secondary);border:0.5px solid var(--border-mid)}
+.mod-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-top:6px;border-top:0.5px solid var(--border-light);margin-top:4px}
+.cat-reset{font-family:var(--font);font-size:11px;font-weight:500;color:var(--text-tertiary);background:none;border:0.5px solid var(--border-mid);border-radius:6px;padding:5px 11px;cursor:pointer;transition:all 0.13s;white-space:nowrap;flex-shrink:0}
+.cat-reset:hover{color:var(--text-info);border-color:var(--blue)}
 
 /* ── Footer / actions ── */
 .actions{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:20px 0 8px}
@@ -333,6 +336,8 @@ header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
   .driver .dvals .dh{color:#000!important;font-size:12.5px!important}
   .driver .dvals .dd-dollar{color:#185fa5!important;font-size:10.5px!important}
   .driver-soft .ds-chip{background:#f3f2ee!important;color:#555!important;border:1px solid #ddd!important}
+  .cat-reset{display:none!important}
+  .mod-foot{border-top:none!important;padding-top:0!important;display:block!important}
 
   /* Disclaimer moved to top in print */
   .disclaimer{display:none!important}
@@ -384,7 +389,7 @@ header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
     <div class="brand">
       <div class="brand-mark"><img src="data:image/png;base64,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" alt="Eleven"></div>
       <div>
-        <h1>Eleven Value Calculator</h1>
+        <h1>Eleven Value Assessment</h1>
         <p>Quantified benefit by module · estimate based on your deployment</p>
       </div>
     </div>
@@ -451,7 +456,7 @@ header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
 
   <!-- Tabs -->
   <div class="tabnav">
-    <button class="tab-btn active" data-tab="calc">Calculator</button>
+    <button class="tab-btn active" data-tab="calc">Assessment</button>
     <button class="tab-btn" data-tab="method">Methodology &amp; References</button>
   </div>
 
@@ -509,7 +514,7 @@ header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
 
   <!-- Actions -->
   <div class="actions">
-    <span class="actions-hint">Open any module and drag a line's slider to tune the estimate to your reality.</span>
+    <span class="actions-hint">Each line starts at a conservative 2 hrs/week. Open a module and drag each line up or down to match the customer's reality.</span>
     <div class="btn-row">
       <button class="btn" id="btn-reset">Reset</button>
       <button class="btn btn-primary" id="btn-print">Print / Save PDF</button>
@@ -527,7 +532,7 @@ header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
 
     <div class="method-intro">
       <h2>How this model works</h2>
-      <p>Every headline figure is the same arithmetic: a scope count you enter (homes, accounts, entities, family members, staff), multiplied by an hours-saved-per-unit-per-year figure for each driver. Total hours convert to a dollar equivalent at the loaded rate you set. Nothing is hidden: turn on <b>Show &amp; edit assumptions</b> on the Calculator tab to see and adjust every per-unit number.</p>
+      <p>Every headline figure is the same arithmetic: a scope count you enter (homes, accounts, entities, family members, staff), multiplied by an hours-saved-per-unit-per-year figure for each driver. Total hours convert to a dollar equivalent at the loaded rate you set. Nothing is hidden: every line opens to a slider you can drag to match the customer's reality, in plain hours per week.</p>
       <p>We separate two things on purpose, because that distinction is what makes the model defensible rather than a black box:</p>
       <div class="layer-cards">
         <div class="layer-card problem">
@@ -694,8 +699,11 @@ let rate = DEFAULT_RATE;
 let discount = 0; // 0..100, percentage off the dollar value
 let active = new Set(MODULES.map(m=>m.id));
 let openMods = new Set();
-// per-driver hours multiplier keyed "modId::driverIndex" (1.0 = baseline estimate)
-let lineScale = {};
+// per-driver chosen WEEKLY hours, keyed "modId::driverIndex".
+// Default start is DEFAULT_WK/week per line; the per-unit baseline is the reset target.
+let lineWeekly = {};
+const DEFAULT_WK = 2;       // conservative starting anchor for every line
+const WK_MAX = 20;          // common slider scale: 0–20 hrs/week
 
 const $ = s=>document.querySelector(s);
 const fmtH = n=> Math.round(n).toLocaleString();
@@ -704,15 +712,15 @@ const discFactor = ()=> (1 - discount/100);
 // weekly hours: one decimal under 10/wk, whole numbers above (reads naturally)
 const fmtWk = n=> (n<10 ? (Math.round(n*10)/10) : Math.round(n));
 
-function scaleOf(mId, idx){
+function baselineWeekly(drv){                  // scope-driven estimate, as a weekly figure
+  return (scope[drv.scope]||0) * drv.hpu / 52;
+}
+function weeklyOf(mId, idx, drv){              // chosen weekly hours (defaults to anchor)
   const k = mId+'::'+idx;
-  return (k in lineScale) ? lineScale[k] : 1;
+  return (k in lineWeekly) ? lineWeekly[k] : DEFAULT_WK;
 }
-function baseDriverHours(mId, idx, drv){      // estimate before the line slider
-  return (scope[drv.scope]||0) * drv.hpu;
-}
-function driverHours(mId, idx, drv){          // after the line slider
-  return baseDriverHours(mId, idx, drv) * scaleOf(mId, idx);
+function driverHours(mId, idx, drv){           // annual hours from the chosen weekly value
+  return weeklyOf(mId, idx, drv) * 52;
 }
 function moduleHours(m){
   return m.drivers.reduce((s,d,i)=> s+driverHours(m.id,i,d), 0);
@@ -742,17 +750,12 @@ function buildBreakdown(){
     const isOpen=openMods.has(m.id);
     let drv='';
     m.drivers.forEach((d,i)=>{
-      const dh=driverHours(m.id,i,d);          // annual hours, after scale
-      const base=baseDriverHours(m.id,i,d);    // annual baseline
-      const baseWk=base/52;
-      const curWk=dh/52;
-      // slider in weekly hours: 0 .. 2x baseline, sensible step
-      const maxWk=Math.max(baseWk*3, baseWk+2);
-      const step=baseWk>=10?1:0.5;
+      const curWk=weeklyOf(m.id,i,d);
+      const dh=curWk*52;                       // annual hours
       drv+=`<div class="driver">
         <div><div class="dn">${d.n}</div><div class="dd">${d.d}</div></div>
         <div class="driver-adjust">
-          <input type="range" class="da-slider" min="0" max="${maxWk.toFixed(2)}" step="${step}" value="${curWk.toFixed(2)}" data-mod="${m.id}" data-idx="${i}" data-base="${baseWk.toFixed(4)}">
+          <input type="range" class="da-slider" min="0" max="${WK_MAX}" step="0.5" value="${curWk.toFixed(1)}" data-mod="${m.id}" data-idx="${i}">
           <div class="da-meta"><span class="da-wk"><b>${fmtWk(curWk)}</b> hrs/week</span></div>
         </div>
         <div class="dvals">
@@ -771,7 +774,10 @@ function buildBreakdown(){
       </div>
       <div class="mod-body${isOpen?' open':''}">
         ${drv}
-        <div class="driver-soft">${soft}</div>
+        <div class="mod-foot">
+          <button class="cat-reset" data-mod="${m.id}" title="Reset this module to its scope-based estimate">↺ Reset to estimate</button>
+          <div class="driver-soft">${soft}</div>
+        </div>
       </div>`;
     wrap.appendChild(card);
   });
@@ -785,11 +791,10 @@ function buildBreakdown(){
     sl.oninput=()=>{
       const mId=sl.dataset.mod, idx=+sl.dataset.idx;
       const k=mId+'::'+idx;
-      const baseWk=parseFloat(sl.dataset.base)||0;
       const chosenWk=parseFloat(sl.value)||0;
-      lineScale[k]= baseWk>0 ? (chosenWk/baseWk) : 0;
+      lineWeekly[k]=chosenWk;
       const m=MODULES.find(x=>x.id===mId);
-      const dh=driverHours(mId,idx,m.drivers[idx]);   // annual
+      const dh=chosenWk*52;
       const row=sl.closest('.driver');
       row.querySelector('.da-wk').innerHTML='<b>'+fmtWk(chosenWk)+'</b> hrs/week';
       row.querySelector('.dh').textContent=fmtH(dh)+' h/yr';
@@ -799,6 +804,15 @@ function buildBreakdown(){
       card.querySelector('.mod-metric .hl').textContent=fmt$(moduleHours(m)*rate*discFactor())+'/yr';
       updateTotals();
       buildAlloc();
+    };
+  });
+  // wire per-category reset (restore that module's lines to the scope-based estimate)
+  wrap.querySelectorAll('.cat-reset').forEach(btn=>{
+    btn.onclick=e=>{
+      e.stopPropagation();
+      const m=MODULES.find(x=>x.id===btn.dataset.mod);
+      m.drivers.forEach((d,i)=>{ lineWeekly[m.id+'::'+i]=baselineWeekly(d); });
+      buildBreakdown(); updateTotals(); buildAlloc();
     };
   });
 }
@@ -901,7 +915,7 @@ document.querySelectorAll('.tab-btn').forEach(b=>{
   };
 });
 $('#btn-reset').onclick=()=>{
-  scope={...DEFAULT_SCOPE}; rate=DEFAULT_RATE; discount=0; lineScale={}; active=new Set(MODULES.map(m=>m.id)); openMods=new Set();
+  scope={...DEFAULT_SCOPE}; rate=DEFAULT_RATE; discount=0; lineWeekly={}; active=new Set(MODULES.map(m=>m.id)); openMods=new Set();
   ['properties','accounts','entities','family','staff'].forEach(k=>$('#s-'+k).value=DEFAULT_SCOPE[k]);
   $('#rate').value=DEFAULT_RATE; $('#discount').value=0; $('#disc-val').textContent='0%';
   render();
