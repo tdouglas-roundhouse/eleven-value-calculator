@@ -545,15 +545,21 @@ header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
     <div class="method-sec-lbl">What the research supports, by module</div>
 
     <div class="ref-card">
-      <div class="ref-head"><div class="ref-swatch" style="background:#185fa5"></div><div class="nm">Eleven Financial &amp; AI Assistants</div></div>
+      <div class="ref-head"><div class="ref-swatch" style="background:#3b6d11"></div><div class="nm">Eleven Financial</div></div>
       <div class="ref-body">
         <div class="ref-line">
-          <div class="ref-driver">Consolidated reporting, document extraction, instant answers</div>
+          <div class="ref-driver">Consolidated reporting, document extraction, instant answers, approvals</div>
           <div class="ref-finding">Persistent reliance on spreadsheets and manual data aggregation remains a significant concern across the industry, and <span class="stat">only about a third of family offices</span> use leading-edge technology outside of investing. This is the exact manual burden these drivers remove.</div>
         </div>
+      </div>
+    </div>
+
+    <div class="ref-card">
+      <div class="ref-head"><div class="ref-swatch" style="background:#185fa5"></div><div class="nm">Eleven Property</div></div>
+      <div class="ref-body">
         <div class="ref-line">
-          <div class="ref-driver">AI-assisted monitoring &amp; retrieval</div>
-          <div class="ref-finding">Interest in AI is high with early adoption underway in research, reporting, and risk; the model prices the time this shift gives back.</div>
+          <div class="ref-driver">Readiness, maintenance, oversight, coordination, alerts</div>
+          <div class="ref-finding">Reactive, manually coordinated property operations drive avoidable cost and risk. Standardized workflows, proactive alerts, and secure coordination convert scattered effort into recoverable time and fewer missed-upkeep surprises.</div>
         </div>
       </div>
     </div>
@@ -562,28 +568,28 @@ header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
       <div class="ref-head"><div class="ref-swatch" style="background:#854f0b"></div><div class="nm">Eleven Family</div></div>
       <div class="ref-body">
         <div class="ref-line">
-          <div class="ref-driver">Travel &amp; residency tracking, centralized records</div>
+          <div class="ref-driver">Travel &amp; residency tracking, centralized records, deadline monitoring</div>
           <div class="ref-finding"><span class="stat">57%</span> of family offices have at least one member living outside the office's primary jurisdiction, and supporting them is a high priority for <span class="stat">85%</span>, with tax, investment, and estate planning the most pressing issues. The cross-border complexity these drivers manage is documented, not assumed.</div>
         </div>
       </div>
     </div>
 
     <div class="ref-card">
-      <div class="ref-head"><div class="ref-swatch" style="background:#185fa5"></div><div class="nm">Dollar conversion &amp; the talent lens</div></div>
+      <div class="ref-head"><div class="ref-swatch" style="background:#185fa5"></div><div class="nm">Platform capabilities, woven into the three modules</div></div>
       <div class="ref-body">
         <div class="ref-line">
-          <div class="ref-driver">Loaded-rate value of recovered hours</div>
-          <div class="ref-finding">Talent is the single largest operating expense for family offices, with <span class="stat">70%</span> reporting difficulty hiring and <span class="stat">65%</span> concerned about retention. When you cannot easily hire or retain, recovered staff hours are not just a cost saving, they are capacity you otherwise cannot buy.</div>
+          <div class="ref-driver">AI assistant, secure messaging, audit trail, document vault</div>
+          <div class="ref-finding">These are not separate line items: the AI assistant, secure communication, approval audit trails, and the document vault power the work inside Property, Financial, and Family, so their value is counted within those modules rather than billed on its own. Interest in AI is high with early adoption underway in research, reporting, and risk; the model prices the time that shift gives back where the work actually happens.</div>
         </div>
       </div>
     </div>
 
     <div class="ref-card">
-      <div class="ref-head"><div class="ref-swatch" style="background:#3b6d11"></div><div class="nm">Messages, Security &amp; Vault (soft benefits)</div></div>
+      <div class="ref-head"><div class="ref-swatch" style="background:#3b6d11"></div><div class="nm">Dollar conversion &amp; the talent lens</div></div>
       <div class="ref-body">
         <div class="ref-line">
-          <div class="ref-driver">Audit-ready approvals, knowledge preserved, emergency-ready records</div>
-          <div class="ref-finding">Two-thirds of offices lack a formal conflict-resolution mechanism and nearly half operate without a documented succession plan or constitution; staff turnover ranks among the most significant operational risks. These are the documented gaps the qualitative benefits speak to.</div>
+          <div class="ref-driver">Loaded-rate value of recovered hours</div>
+          <div class="ref-finding">Talent is the single largest operating expense for family offices, with <span class="stat">70%</span> reporting difficulty hiring and <span class="stat">65%</span> concerned about retention. When you cannot easily hire or retain, recovered staff hours are not just a cost saving, they are capacity you otherwise cannot buy.</div>
         </div>
       </div>
     </div>
@@ -637,56 +643,45 @@ const MODULES = [
   {
     id:'property', name:'Eleven Property', color:'#185fa5',
     desc:'Readiness, maintenance, issues, assets across homes',
-    soft:['Fewer arrival-day surprises','Lower repair risk','Clear accountability'],
+    soft:['Fewer arrival-day surprises','Lower repair risk','Clear accountability','Lower phishing exposure'],
     drivers:[
       {n:'Property readiness & pre-arrival', d:'Standardized turnover checklists per home', scope:'properties', hpu:34},
       {n:'Preventative maintenance', d:'Scheduling and records that prevent missed upkeep', scope:'properties', hpu:26},
       {n:'Issue reporting & resolution', d:'Nothing lost between email and text', scope:'properties', hpu:30},
       {n:'Multi-property oversight', d:'Real-time portfolio status without chasing updates', scope:'properties', hpu:18},
       {n:'Budgeting & expense tracking', d:'Budget vs actual visibility per property', scope:'properties', hpu:14},
+      {n:'Proactive maintenance alerts', d:'AI surfaces upkeep and renewals before they slip', scope:'properties', hpu:10},
+      {n:'Instant answers (AI assistant)', d:'Self-serve retrieval of property info, codes, and history', scope:'properties', hpu:14},
+      {n:'Secure staff & vendor coordination', d:'In-platform messaging and access codes per property', scope:'properties', hpu:13},
     ]
   },
   {
     id:'financial', name:'Eleven Financial', color:'#3b6d11',
     desc:'Net worth, reporting, private investments, entities',
-    soft:['Real-time vs quarterly','Fewer missed capital calls','Confident principal answers'],
+    soft:['Real-time vs quarterly','Fewer missed capital calls','Confident principal answers','Audit-ready approvals'],
     drivers:[
       {n:'Consolidated reporting', d:'Removes manual spreadsheet consolidation', scope:'accounts', hpu:7},
       {n:'Real-time net worth', d:'On-demand view replaces report assembly', scope:'accounts', hpu:3.5},
       {n:'Private investment tracking', d:'Capital calls, distributions, documents in one place', scope:'accounts', hpu:4},
       {n:'Entity-level visibility', d:'Roll-ups across LLCs, trusts, holding companies', scope:'entities', hpu:18},
       {n:'Document extraction', d:'Less manual pulling of data from PDFs', scope:'accounts', hpu:3},
+      {n:'Instant answers (AI assistant)', d:'Self-serve retrieval of financial data and documents', scope:'accounts', hpu:4},
+      {n:'Approval workflows', d:'Documented audit trail for expenses, calls, and investments', scope:'accounts', hpu:2.4},
+      {n:'Knowledge continuity', d:'Institutional knowledge preserved through staff turnover', scope:'staff', hpu:8},
     ]
   },
   {
     id:'family', name:'Eleven Family', color:'#854f0b',
     desc:'Records, estate, travel, life administration',
-    soft:['Emergency-ready records','Residency compliance','Less life-admin drag'],
+    soft:['Emergency-ready records','Residency compliance','Less life-admin drag','Family owns the data'],
     drivers:[
       {n:'Centralized family records', d:'Passports, IDs, medical, memberships retrievable fast', scope:'family', hpu:16},
       {n:'Travel & residency tracking', d:'Automatic day counting against thresholds', scope:'family', hpu:12},
       {n:'Estate & insurance organization', d:'Documents and renewals in one place', scope:'family', hpu:9},
       {n:'Life administration coordination', d:'Less staff time searching for details', scope:'staff', hpu:22},
-    ]
-  },
-  {
-    id:'ai', name:'AI Assistants', color:'#185fa5',
-    desc:'Instant answers, proactive monitoring, onboarding',
-    soft:['Faster decisions','Deadlines caught early','Knowledge preserved'],
-    drivers:[
-      {n:'Instant answers', d:'Self-serve retrieval instead of hunting across systems', scope:'staff', hpu:40},
-      {n:'Proactive risk & deadline monitoring', d:'Renewals, calls, maintenance surfaced before they slip', scope:'staff', hpu:14},
-      {n:'New-hire onboarding', d:'Institutional knowledge no longer trapped in people', scope:'staff', hpu:10},
-    ]
-  },
-  {
-    id:'platform', name:'Messages, Security & Vault', color:'#3b6d11',
-    desc:'Approvals, secure comms, access, audit trail',
-    soft:['Audit-ready approvals','Lower phishing exposure','Family owns the data'],
-    drivers:[
-      {n:'Approval workflows', d:'Documented audit trail replaces scattered threads', scope:'staff', hpu:12},
-      {n:'Secure communication', d:'In-platform replaces sensitive email', scope:'staff', hpu:8},
-      {n:'Credential & document vault', d:'Fast, secure retrieval of codes and records', scope:'staff', hpu:9},
+      {n:'Renewal & deadline monitoring', d:'AI flags insurance, residency, and key dates early', scope:'family', hpu:5},
+      {n:'Instant answers (AI assistant)', d:'Self-serve retrieval of family records and details', scope:'family', hpu:14},
+      {n:'Secure document vault', d:'Encrypted access to sensitive family and estate records', scope:'family', hpu:6},
     ]
   },
 ];
