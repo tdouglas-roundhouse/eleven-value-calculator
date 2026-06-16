@@ -1,2 +1,2 @@
-# eleven-value-calculator
-Eleven - Value Calculator
+# eleven-value-assessment
+Eleven - Value Assessment
