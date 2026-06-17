@@ -482,9 +482,9 @@ header{background:var(--ink-deep);color:#fff;padding:26px 0 24px}
           <input class="rate-input" type="number" min="0" id="rate" value="125">
         </div>
         <div class="disc-row">
-          <label for="discount">Value discount</label>
+          <label for="discount">Adjust estimate</label>
           <input type="range" id="discount" class="disc-slider" min="0" max="100" step="5" value="0">
-          <span class="disc-val" id="disc-val">0%</span>
+          <span class="disc-val" id="disc-val">Full</span>
         </div>
       </div>
     </div>
@@ -696,7 +696,7 @@ const DEFAULT_RATE = 125;
 
 let scope = {...DEFAULT_SCOPE};
 let rate = DEFAULT_RATE;
-let discount = 0; // 0..100, percentage off the dollar value
+let adjust = 0; // 0..100, global reduction applied to total hours (and $ follow)
 let active = new Set(MODULES.map(m=>m.id));
 let openMods = new Set();
 // per-driver chosen WEEKLY hours, keyed "modId::driverIndex".
@@ -708,7 +708,7 @@ const WK_MAX = 20;          // common slider scale: 0–20 hrs/week
 const $ = s=>document.querySelector(s);
 const fmtH = n=> Math.round(n).toLocaleString();
 const fmt$ = n=> '$'+Math.round(n).toLocaleString();
-const discFactor = ()=> (1 - discount/100);
+const adjFactor = ()=> (1 - adjust/100);   // global estimate adjustment (hours & $)
 // weekly hours: one decimal under 10/wk, whole numbers above (reads naturally)
 const fmtWk = n=> (n<10 ? (Math.round(n*10)/10) : Math.round(n));
 
@@ -719,11 +719,11 @@ function weeklyOf(mId, idx, drv){              // chosen weekly hours (defaults 
   const k = mId+'::'+idx;
   return (k in lineWeekly) ? lineWeekly[k] : DEFAULT_WK;
 }
-function driverHours(mId, idx, drv){           // annual hours from the chosen weekly value
+function driverHours(mId, idx, drv){           // raw annual hours for a line (pre-adjustment)
   return weeklyOf(mId, idx, drv) * 52;
 }
-function moduleHours(m){
-  return m.drivers.reduce((s,d,i)=> s+driverHours(m.id,i,d), 0);
+function moduleHours(m){                        // adjusted module total
+  return m.drivers.reduce((s,d,i)=> s+driverHours(m.id,i,d), 0) * adjFactor();
 }
 
 // ── Build module toggles ──
@@ -760,7 +760,7 @@ function buildBreakdown(){
         </div>
         <div class="dvals">
           <div class="dh">${fmtH(dh)} h/yr</div>
-          <div class="dd-dollar">${fmt$(dh*rate*discFactor())}</div>
+          <div class="dd-dollar">${fmt$(dh*rate)}</div>
         </div>
       </div>`;
     });
@@ -769,7 +769,7 @@ function buildBreakdown(){
       <div class="mod-head" data-mod="${m.id}">
         <div class="mod-swatch" style="background:${m.color}"></div>
         <div class="mod-title"><div class="nm">${m.name}</div><div class="ds">${m.desc}</div></div>
-        <div class="mod-metric"><div class="h">${fmtH(h)} h</div><div class="hl">${fmt$(h*rate*discFactor())}/yr</div></div>
+        <div class="mod-metric"><div class="h">${fmtH(h)} h</div><div class="hl">${fmt$(h*rate)}/yr</div></div>
         <div class="mod-chev${isOpen?' open':''}">▶</div>
       </div>
       <div class="mod-body${isOpen?' open':''}">
@@ -798,10 +798,10 @@ function buildBreakdown(){
       const row=sl.closest('.driver');
       row.querySelector('.da-wk').innerHTML='<b>'+fmtWk(chosenWk)+'</b> hrs/week';
       row.querySelector('.dh').textContent=fmtH(dh)+' h/yr';
-      row.querySelector('.dd-dollar').textContent=fmt$(dh*rate*discFactor());
+      row.querySelector('.dd-dollar').textContent=fmt$(dh*rate);
       const card=sl.closest('.mod-card');
       card.querySelector('.mod-metric .h').textContent=fmtH(moduleHours(m))+' h';
-      card.querySelector('.mod-metric .hl').textContent=fmt$(moduleHours(m)*rate*discFactor())+'/yr';
+      card.querySelector('.mod-metric .hl').textContent=fmt$(moduleHours(m)*rate)+'/yr';
       updateTotals();
       buildAlloc();
     };
@@ -824,7 +824,7 @@ function totalHours(){
 function updateTotals(){
   const h=totalHours();
   $('#hl-hours').textContent=fmtH(h);
-  $('#hl-dollar').textContent=fmt$(h*rate*discFactor());
+  $('#hl-dollar').textContent=fmt$(h*rate);
   // keep print scope summary in sync
   ['properties','accounts','entities','family','staff'].forEach(k=>{
     const el=document.getElementById('ss-'+k);
@@ -877,9 +877,9 @@ function render(){ buildToggles(); buildBreakdown(); updateTotals(); buildSoft()
 });
 $('#rate').oninput=e=>{ rate=Math.max(0,parseInt(e.target.value)||0); buildBreakdown(); updateTotals(); };
 $('#discount').oninput=e=>{
-  discount=Math.min(100,Math.max(0,parseInt(e.target.value)||0));
-  $('#disc-val').textContent=discount+'%';
-  buildBreakdown(); updateTotals();
+  adjust=Math.min(100,Math.max(0,parseInt(e.target.value)||0));
+  $('#disc-val').textContent = adjust===0 ? 'Full' : ('\u2212'+adjust+'%');
+  buildBreakdown(); updateTotals(); buildAlloc();
 };
 // ── Print prep modal ──
 const modal=document.getElementById('print-modal');
@@ -915,9 +915,9 @@ document.querySelectorAll('.tab-btn').forEach(b=>{
   };
 });
 $('#btn-reset').onclick=()=>{
-  scope={...DEFAULT_SCOPE}; rate=DEFAULT_RATE; discount=0; lineWeekly={}; active=new Set(MODULES.map(m=>m.id)); openMods=new Set();
+  scope={...DEFAULT_SCOPE}; rate=DEFAULT_RATE; adjust=0; lineWeekly={}; active=new Set(MODULES.map(m=>m.id)); openMods=new Set();
   ['properties','accounts','entities','family','staff'].forEach(k=>$('#s-'+k).value=DEFAULT_SCOPE[k]);
-  $('#rate').value=DEFAULT_RATE; $('#discount').value=0; $('#disc-val').textContent='0%';
+  $('#rate').value=DEFAULT_RATE; $('#discount').value=0; $('#disc-val').textContent='Full';
   render();
 };
 
